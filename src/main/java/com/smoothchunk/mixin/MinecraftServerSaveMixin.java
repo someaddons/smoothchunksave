@@ -14,7 +14,7 @@ public class MinecraftServerSaveMixin
     {
         if (SmoothchunkMod.config.getCommonConfig().noSaveAll.get())
         {
-            return false;
+            return true;
         }
         else
         {
