@@ -12,7 +12,7 @@ public class MinecraftServerSaveMixin
     @Redirect(method = "saveEverything", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;saveAllChunks(ZZZ)Z"))
     public boolean onSaveALlChunks(final MinecraftServer server, boolean a, boolean b, boolean c)
     {
-        if (SmoothchunkMod.config.getCommonConfig().noSaveAll.get())
+        if (SmoothchunkMod.config.getCommonConfig().noSaveAll)
         {
             return true;
         }
