@@ -5,7 +5,7 @@
   "mixins": [
     "ChunkAccessMixin",
     "ChunkMapMixin",
-    "MinecraftServerSaveMixin"
+    "ServerChunkCacheMixin"
   ],
   "client": [
   ],

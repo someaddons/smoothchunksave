@@ -22,12 +22,6 @@ public class CommonConfiguration
         entry.addProperty("chunkSaveDelay", chunkSaveDelay);
         root.add("chunkSaveDelay", entry);
 
-        final JsonObject entry2 = new JsonObject();
-        entry2.addProperty("desc:", "Disables saving all chunks at once every 5 minutes(also does prevent the saveall command from saving chunks). "
-                                      + "By default this does disable the save all chunks at once every 5 minutes because those are now saved smoothly distributed over time instead. default: true");
-        entry2.addProperty("noSaveAll", noSaveAll);
-        root.add("noSaveAll", entry2);
-
         final JsonObject entry3 = new JsonObject();
         entry3.addProperty("desc:", "Enables debug logging of how many chunks got saved in a tick. default: false");
         entry3.addProperty("debugLogging", debugLogging);
@@ -47,7 +41,6 @@ public class CommonConfiguration
         try
         {
             chunkSaveDelay = data.get("chunkSaveDelay").getAsJsonObject().get("chunkSaveDelay").getAsInt();
-            noSaveAll = data.get("noSaveAll").getAsJsonObject().get("noSaveAll").getAsBoolean();
             debugLogging = data.get("debugLogging").getAsJsonObject().get("debugLogging").getAsBoolean();
         }
         catch (Exception e)
