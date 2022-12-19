@@ -5,11 +5,10 @@ import com.smoothchunk.world.IChunkTimeSave;
 import com.smoothchunk.world.PosTimeEntry;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
-import net.minecraft.network.protocol.Packet;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ImposterProtoChunk;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -32,19 +31,13 @@ public abstract class ChunkMapMixin
     private volatile Long2ObjectLinkedOpenHashMap<ChunkHolder> visibleChunkMap;
 
     @Shadow
-    protected abstract boolean save(final ChunkAccess p_140259_);
-
-    @Shadow
     protected abstract boolean saveChunkIfNeeded(final ChunkHolder p_198875_);
-
-    @Shadow
-    public abstract void broadcast(final Entity p_140202_, final Packet<?> p_140203_);
 
     private final Long2ObjectLinkedOpenHashMap<ChunkHolder> emptyMap = new Long2ObjectLinkedOpenHashMap<>();
     private final ArrayDeque<PosTimeEntry>                  toSave   = new ArrayDeque<>();
 
-    @Redirect(method = "processUnloads", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/longs/Long2ObjectLinkedOpenHashMap;values()Lit/unimi/dsi/fastutil/objects/ObjectCollection;"))
-    public ObjectCollection<ChunkHolder> smoothChunksaveChunks(final Long2ObjectLinkedOpenHashMap instance)
+    @Redirect(method = "processUnloads", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/ObjectCollection;iterator()Lit/unimi/dsi/fastutil/objects/ObjectIterator;"))
+    public ObjectIterator<ChunkHolder> smoothChunksaveChunks(final ObjectCollection instance)
     {
         final long currentGametime = level.getGameTime();
 
@@ -65,16 +58,16 @@ public abstract class ChunkMapMixin
 
                 if (chunkaccess.isUnsaved())
                 {
-                    final long saveTimePoint = ((IChunkTimeSave) chunkaccess).getNextSaveTime();
+                    final long saveTimePoint = ((IChunkTimeSave) chunkaccess).smoothchunk$getNextSaveTime();
                     if (saveTimePoint == 0)
                     {
-                        ((IChunkTimeSave) chunkaccess).setSaveTimePoint(
+                        ((IChunkTimeSave) chunkaccess).smoothchunk$setSaveTimePoint(
                           currentGametime + SmoothchunkMod.config.getCommonConfig().chunkSaveDelay.get() * 20 + SmoothchunkMod.rand.nextInt(20) * 20);
-                        toSave.addLast(new PosTimeEntry(((IChunkTimeSave) chunkaccess).getNextSaveTime(), entry.getPos()));
+                        toSave.addLast(new PosTimeEntry(((IChunkTimeSave) chunkaccess).smoothchunk$getNextSaveTime(), entry.getPos()));
                     }
                     else if (currentGametime > saveTimePoint)
                     {
-                        ((IChunkTimeSave) chunkaccess).setSaveTimePoint(0);
+                        ((IChunkTimeSave) chunkaccess).smoothchunk$setSaveTimePoint(0);
                     }
                 }
             }
@@ -110,6 +103,6 @@ public abstract class ChunkMapMixin
             SmoothchunkMod.LOGGER.info("Smoothchunks saved chunks this tick: " + savedChunks);
         }
 
-        return emptyMap.values();
+        return emptyMap.values().iterator();
     }
 }
