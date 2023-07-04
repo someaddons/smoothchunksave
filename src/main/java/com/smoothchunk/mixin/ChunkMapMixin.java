@@ -17,6 +17,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -33,18 +34,15 @@ public abstract class ChunkMapMixin
     private volatile Long2ObjectLinkedOpenHashMap<ChunkHolder> visibleChunkMap;
 
     @Shadow
-    protected abstract boolean save(final ChunkAccess p_140259_);
-
-    @Shadow
     protected abstract boolean saveChunkIfNeeded(final ChunkHolder p_198875_);
 
-    @Shadow
-    public abstract void broadcast(final Entity p_140202_, final Packet<?> p_140203_);
-
+    @Unique
     private final Long2ObjectLinkedOpenHashMap<ChunkHolder> emptyMap = new Long2ObjectLinkedOpenHashMap<>();
+
+    @Unique
     private final ArrayDeque<PosTimeEntry>                  toSave   = new ArrayDeque<>();
 
-    @Redirect(method = "processUnloads", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/ObjectCollection;iterator()Lit/unimi/dsi/fastutil/objects/ObjectIterator;"))
+    @Redirect(method = "processUnloads", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/ObjectCollection;iterator()Lit/unimi/dsi/fastutil/objects/ObjectIterator;", remap = false))
     public ObjectIterator<ChunkHolder> smoothChunksaveChunks(final ObjectCollection instance)
     {
         final long currentGametime = level.getGameTime();
