@@ -1,15 +1,14 @@
 package com.smoothchunk.config;
 
+import com.cupboard.config.ICommonConfig;
 import com.google.gson.JsonObject;
-import com.smoothchunk.SmoothchunkMod;
 
-public class CommonConfiguration
+public class CommonConfiguration implements ICommonConfig
 {
     public int     chunkSaveDelay = 300;
-    public boolean noSaveAll      = true;
     public boolean debugLogging   = false;
 
-    protected CommonConfiguration()
+    public CommonConfiguration()
     {
     }
 
@@ -32,20 +31,7 @@ public class CommonConfiguration
 
     public void deserialize(JsonObject data)
     {
-        if (data == null)
-        {
-            SmoothchunkMod.LOGGER.error("Config file was empty!");
-            return;
-        }
-
-        try
-        {
-            chunkSaveDelay = data.get("chunkSaveDelay").getAsJsonObject().get("chunkSaveDelay").getAsInt();
-            debugLogging = data.get("debugLogging").getAsJsonObject().get("debugLogging").getAsBoolean();
-        }
-        catch (Exception e)
-        {
-            SmoothchunkMod.LOGGER.error("Could not parse config file", e);
-        }
+        chunkSaveDelay = data.get("chunkSaveDelay").getAsJsonObject().get("chunkSaveDelay").getAsInt();
+        debugLogging = data.get("debugLogging").getAsJsonObject().get("debugLogging").getAsBoolean();
     }
 }
