@@ -1,25 +1,37 @@
 package com.smoothchunk.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import com.cupboard.config.ICommonConfig;
+import com.google.gson.JsonObject;
 
-public class CommonConfiguration
+public class CommonConfiguration implements ICommonConfig
 {
-    public final ForgeConfigSpec                      ForgeConfigSpecBuilder;
-    public final ForgeConfigSpec.ConfigValue<Integer> chunkSaveDelay;
-    public final ForgeConfigSpec.ConfigValue<Boolean> debugLogging;
+    public int     chunkSaveDelay = 300;
+    public boolean debugLogging   = false;
 
-    protected CommonConfiguration(final ForgeConfigSpec.Builder builder)
+    public CommonConfiguration()
     {
-        builder.push("Config category");
+    }
 
-        builder.comment("Delay before a chunk is saved to disk, default: 300 seconds. If you enable the noSaveAll config, it is suggest to set this to 180.");
-        chunkSaveDelay = builder.defineInRange("chunkSaveDelay", 300, 100, 3000);
+    public JsonObject serialize()
+    {
+        final JsonObject root = new JsonObject();
 
-        builder.comment("Enables debug logging of how many chunks got saved in a tick. default: false");
-        debugLogging = builder.define("debugLogging", false);
+        final JsonObject entry = new JsonObject();
+        entry.addProperty("desc:", "Delay before a chunk is saved to disk, default: 300 seconds. If you enable the noSaveAll config, it is suggest to set this to 180.");
+        entry.addProperty("chunkSaveDelay", chunkSaveDelay);
+        root.add("chunkSaveDelay", entry);
 
-        // Escapes the current category level
-        builder.pop();
-        ForgeConfigSpecBuilder = builder.build();
+        final JsonObject entry3 = new JsonObject();
+        entry3.addProperty("desc:", "Enables debug logging of how many chunks got saved in a tick. default: false");
+        entry3.addProperty("debugLogging", debugLogging);
+        root.add("debugLogging", entry3);
+
+        return root;
+    }
+
+    public void deserialize(JsonObject data)
+    {
+        chunkSaveDelay = data.get("chunkSaveDelay").getAsJsonObject().get("chunkSaveDelay").getAsInt();
+        debugLogging = data.get("debugLogging").getAsJsonObject().get("debugLogging").getAsBoolean();
     }
 }

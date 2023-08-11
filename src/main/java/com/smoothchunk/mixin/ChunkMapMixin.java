@@ -62,7 +62,7 @@ public abstract class ChunkMapMixin
                     if (saveTimePoint == 0)
                     {
                         ((IChunkTimeSave) chunkaccess).smoothchunk$setSaveTimePoint(
-                          currentGametime + SmoothchunkMod.config.getCommonConfig().chunkSaveDelay.get() * 20 + SmoothchunkMod.rand.nextInt(20) * 20);
+                          currentGametime + SmoothchunkMod.config.getCommonConfig().chunkSaveDelay * 20 + SmoothchunkMod.rand.nextInt(20) * 20);
                         toSave.addLast(new PosTimeEntry(((IChunkTimeSave) chunkaccess).smoothchunk$getNextSaveTime(), entry.getPos()));
                     }
                     else if (currentGametime > saveTimePoint)
@@ -98,7 +98,7 @@ public abstract class ChunkMapMixin
             }
         }
 
-        if (savedChunks > 0 && SmoothchunkMod.config.getCommonConfig().debugLogging.get())
+        if (savedChunks > 0 && SmoothchunkMod.config.getCommonConfig().debugLogging)
         {
             SmoothchunkMod.LOGGER.info("Smoothchunks saved chunks this tick: " + savedChunks);
         }
