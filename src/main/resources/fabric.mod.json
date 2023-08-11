@@ -29,6 +29,7 @@
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric": "*",
+    "cupboard": "*",
     "java": ">=17"
   },
   "suggests": {
