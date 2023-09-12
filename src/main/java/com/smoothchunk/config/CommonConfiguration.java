@@ -17,7 +17,7 @@ public class CommonConfiguration implements ICommonConfig
         final JsonObject root = new JsonObject();
 
         final JsonObject entry = new JsonObject();
-        entry.addProperty("desc:", "Delay before a chunk is saved to disk, default: 300 seconds. If you enable the noSaveAll config, it is suggest to set this to 180.");
+        entry.addProperty("desc:", "Delay before a chunk is saved to disk, default: 300 seconds");
         entry.addProperty("chunkSaveDelay", chunkSaveDelay);
         root.add("chunkSaveDelay", entry);
 
