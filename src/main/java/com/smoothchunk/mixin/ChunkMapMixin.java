@@ -44,7 +44,7 @@ public abstract class ChunkMapMixin
     private final Long2ObjectLinkedOpenHashMap<ChunkHolder> emptyMap = new Long2ObjectLinkedOpenHashMap<>();
     private final ArrayDeque<PosTimeEntry>                  toSave   = new ArrayDeque<>();
 
-    @Redirect(method = "processUnloads", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/ObjectCollection;iterator()Lit/unimi/dsi/fastutil/objects/ObjectIterator;"))
+    @Redirect(method = "processUnloads", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/ObjectCollection;iterator()Lit/unimi/dsi/fastutil/objects/ObjectIterator;", remap = false))
     public ObjectIterator<ChunkHolder> smoothChunksaveChunks(final ObjectCollection instance)
     {
         final long currentGametime = level.getGameTime();
