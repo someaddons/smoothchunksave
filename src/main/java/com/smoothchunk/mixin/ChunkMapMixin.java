@@ -70,7 +70,7 @@ public abstract class ChunkMapMixin
                     if (saveTimePoint == 0)
                     {
                         ((IChunkTimeSave) chunkaccess).setSaveTimePoint(
-                          currentGametime + SmoothchunkMod.config.getCommonConfig().chunkSaveDelay * 20 + SmoothchunkMod.rand.nextInt(20) * 20);
+                          currentGametime + SmoothchunkMod.config.getCommonConfig().chunkSaveDelay * 20L + SmoothchunkMod.rand.nextInt(20) * 20);
                         toSave.addLast(new PosTimeEntry(((IChunkTimeSave) chunkaccess).getNextSaveTime(), entry.getPos()));
                     }
                     else if (currentGametime > saveTimePoint)
