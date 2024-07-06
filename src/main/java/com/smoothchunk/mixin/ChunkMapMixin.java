@@ -53,12 +53,12 @@ public abstract class ChunkMapMixin
         {
             for (final ChunkHolder entry : visibleChunkMap.values())
             {
-                if (!entry.wasAccessibleSinceLastSave())
+                if (!entry.wasAccessibleSinceLastSave() || !entry.isReadyForSaving())
                 {
                     continue;
                 }
 
-                final ChunkAccess chunkaccess = entry.getChunkToSave().getNow((ChunkAccess) null);
+                final ChunkAccess chunkaccess = entry.getLatestChunk();
                 if (!(chunkaccess instanceof ImposterProtoChunk) && !(chunkaccess instanceof LevelChunk))
                 {
                     continue;
