@@ -2,7 +2,9 @@ package com.smoothchunk;
 
 import com.cupboard.config.CupboardConfig;
 import com.smoothchunk.config.CommonConfiguration;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +21,7 @@ public class SmoothchunkMod
     public static       CupboardConfig<CommonConfiguration> config = new CupboardConfig<>(MODID, new CommonConfiguration());
     public static       Random                              rand   = new Random();
 
-    public SmoothchunkMod()
+    public SmoothchunkMod(IEventBus modEventBus, ModContainer modContainer)
     {
     }
 }

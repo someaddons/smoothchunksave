@@ -49,12 +49,12 @@ public abstract class ChunkMapMixin
         {
             for (final ChunkHolder entry : visibleChunkMap.values())
             {
-                if (!entry.wasAccessibleSinceLastSave())
+                if (!entry.wasAccessibleSinceLastSave() || !entry.isReadyForSaving())
                 {
                     continue;
                 }
 
-                final ChunkAccess chunkaccess = entry.getChunkToSave().getNow((ChunkAccess) null);
+                final ChunkAccess chunkaccess = entry.getLatestChunk();
                 if (!(chunkaccess instanceof ImposterProtoChunk) && !(chunkaccess instanceof LevelChunk))
                 {
                     continue;
@@ -91,8 +91,10 @@ public abstract class ChunkMapMixin
                 final ChunkHolder holder = visibleChunkMap.get(posTimeEntry.pos.toLong());
                 if (holder != null)
                 {
-                    saveChunkIfNeeded(holder);
-                    savedChunks++;
+                    if (saveChunkIfNeeded(holder))
+                    {
+                        savedChunks++;
+                    }
                 }
                 toSave.pop();
             }
