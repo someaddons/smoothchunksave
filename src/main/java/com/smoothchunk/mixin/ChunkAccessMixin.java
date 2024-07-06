@@ -10,13 +10,13 @@ public abstract class ChunkAccessMixin implements IChunkTimeSave
     long saveTimePoint = 0;
 
     @Override
-    public long getNextSaveTime()
+    public long smoothchunk$getNextSaveTime()
     {
         return saveTimePoint;
     }
 
     @Override
-    public void setSaveTimePoint(final long timePoint)
+    public void smoothchunk$setSaveTimePoint(final long timePoint)
     {
         saveTimePoint = timePoint;
     }

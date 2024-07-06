@@ -2,7 +2,7 @@ package com.smoothchunk.world;
 
 public interface IChunkTimeSave
 {
-    public long getNextSaveTime();
+    public long smoothchunk$getNextSaveTime();
 
-    void setSaveTimePoint(long timePoint);
+    void smoothchunk$setSaveTimePoint(long timePoint);
 }
