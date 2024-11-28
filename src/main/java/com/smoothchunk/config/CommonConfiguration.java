@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 public class CommonConfiguration implements ICommonConfig
 {
     public int     chunkSaveDelay = 300;
+    public int chunkUnloadLimit = 20;
     public boolean debugLogging   = false;
 
     public CommonConfiguration()
@@ -20,6 +21,11 @@ public class CommonConfiguration implements ICommonConfig
         entry.addProperty("desc:", "Delay before a chunk is saved to disk, default: 300 seconds");
         entry.addProperty("chunkSaveDelay", chunkSaveDelay);
         root.add("chunkSaveDelay", entry);
+
+        final JsonObject entry2 = new JsonObject();
+        entry2.addProperty("desc:", "Maximum amount of chunks unloaded per tick, default: 20, vanilla:200");
+        entry2.addProperty("chunkUnloadLimit", chunkUnloadLimit);
+        root.add("chunkUnloadLimit", entry2);
 
         final JsonObject entry3 = new JsonObject();
         entry3.addProperty("desc:", "Enables debug logging of how many chunks got saved in a tick. default: false");

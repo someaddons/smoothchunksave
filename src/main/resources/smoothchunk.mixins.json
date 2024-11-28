@@ -5,6 +5,7 @@
   "mixins": [
     "ChunkAccessMixin",
     "ChunkMapMixin",
+    "ChunkMapSlowUnload",
     "PersistentEntitySectionManagerMixin",
     "ServerChunkCacheMixin"
   ],
