@@ -26,7 +26,7 @@ public class ChunkMapSlowUnload
     @ModifyConstant(method = "processUnloads", constant = @Constant(intValue = 200))
     private int setLimit(final int constant)
     {
-        return SmoothchunkMod.config.getCommonConfig().chunkUnloadLimit;
+        return SmoothchunkMod.config.getCommonConfig().chunkUnloadLimit + toDrop.size() / 200;
     }
 
     @ModifyConstant(method = "processUnloads", constant = @Constant(intValue = 2000))
