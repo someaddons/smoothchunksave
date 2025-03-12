@@ -8,6 +8,7 @@ public class CommonConfiguration implements ICommonConfig
     public int     chunkSaveDelay = 300;
     public int chunkUnloadLimit = 20;
     public boolean debugLogging   = false;
+    public boolean disableProtoSave = true;
 
     public CommonConfiguration()
     {
@@ -27,6 +28,11 @@ public class CommonConfiguration implements ICommonConfig
         entry2.addProperty("chunkUnloadLimit", chunkUnloadLimit);
         root.add("chunkUnloadLimit", entry2);
 
+        final JsonObject entry4 = new JsonObject();
+        entry4.addProperty("desc:", "Disables saving of protochunks(not fully generated chunks) to reduce saving lag. Default: true");
+        entry4.addProperty("disableProtoSave", disableProtoSave);
+        root.add("disableProtoSave", entry4);
+
         final JsonObject entry3 = new JsonObject();
         entry3.addProperty("desc:", "Enables debug logging of how many chunks got saved in a tick. default: false");
         entry3.addProperty("debugLogging", debugLogging);
@@ -39,5 +45,7 @@ public class CommonConfiguration implements ICommonConfig
     {
         chunkSaveDelay = data.get("chunkSaveDelay").getAsJsonObject().get("chunkSaveDelay").getAsInt();
         debugLogging = data.get("debugLogging").getAsJsonObject().get("debugLogging").getAsBoolean();
+        chunkUnloadLimit = data.get("chunkUnloadLimit").getAsJsonObject().get("chunkUnloadLimit").getAsInt();
+        disableProtoSave = data.get("disableProtoSave").getAsJsonObject().get("disableProtoSave").getAsBoolean();
     }
 }
