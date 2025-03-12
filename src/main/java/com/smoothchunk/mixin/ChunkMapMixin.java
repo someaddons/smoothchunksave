@@ -12,13 +12,16 @@ import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.ImposterProtoChunk;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayDeque;
 
@@ -114,5 +117,14 @@ public abstract class ChunkMapMixin
         }
 
         return emptyMap.values().iterator();
+    }
+
+    @Inject(method = "save", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap;isExistingChunkFull(Lnet/minecraft/world/level/ChunkPos;)Z"), cancellable = true)
+    private void checkExisting(final ChunkAccess chunkAccess, final CallbackInfoReturnable<Boolean> cir)
+    {
+        if (SmoothchunkMod.config.getCommonConfig().disableProtoSave && chunkAccess.getStatus().getChunkType() != ChunkStatus.ChunkType.LEVELCHUNK)
+        {
+            cir.setReturnValue(false);
+        }
     }
 }
