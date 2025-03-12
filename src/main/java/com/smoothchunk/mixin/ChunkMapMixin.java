@@ -10,9 +10,9 @@ import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.ImposterProtoChunk;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.status.ChunkType;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -69,7 +69,7 @@ public abstract class ChunkMapMixin
                     if (saveTimePoint == 0)
                     {
                         ((IChunkTimeSave) chunkaccess).smoothchunk$setSaveTimePoint(
-                          currentGametime + SmoothchunkMod.config.getCommonConfig().chunkSaveDelay * 20L + SmoothchunkMod.rand.nextInt(20) * 20);
+                            currentGametime + SmoothchunkMod.config.getCommonConfig().chunkSaveDelay * 20L + SmoothchunkMod.rand.nextInt(20) * 20);
                         toSave.addLast(new PosTimeEntry(((IChunkTimeSave) chunkaccess).smoothchunk$getNextSaveTime(), entry.getPos()));
                     }
                     else if (currentGametime > saveTimePoint)
@@ -118,7 +118,7 @@ public abstract class ChunkMapMixin
     @Inject(method = "save", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap;isExistingChunkFull(Lnet/minecraft/world/level/ChunkPos;)Z"), cancellable = true)
     private void checkExisting(final ChunkAccess chunkAccess, final CallbackInfoReturnable<Boolean> cir)
     {
-        if (SmoothchunkMod.config.getCommonConfig().disableProtoSave && chunkAccess.getStatus().getChunkType() != ChunkStatus.ChunkType.LEVELCHUNK)
+        if (SmoothchunkMod.config.getCommonConfig().disableProtoSave && chunkAccess.getPersistedStatus().getChunkType() != ChunkType.LEVELCHUNK)
         {
             cir.setReturnValue(false);
         }
