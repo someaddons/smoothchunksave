@@ -4,11 +4,10 @@ import com.smoothchunk.SmoothchunkMod;
 import com.smoothchunk.world.IChunkTimeSave;
 import com.smoothchunk.world.PosTimeEntry;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectCollection;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Util;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ImposterProtoChunk;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -19,10 +18,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayDeque;
+import java.util.function.BooleanSupplier;
 
 @Mixin(ChunkMap.class)
 public abstract class ChunkMapMixin
@@ -35,7 +35,7 @@ public abstract class ChunkMapMixin
     private volatile Long2ObjectLinkedOpenHashMap<ChunkHolder> visibleChunkMap;
 
     @Shadow
-    protected abstract boolean saveChunkIfNeeded(final ChunkHolder p_198875_);
+    protected abstract boolean saveChunkIfNeeded(final ChunkHolder chunk, final long now);
 
     @Unique
     private final Long2ObjectLinkedOpenHashMap<ChunkHolder> emptyMap = new Long2ObjectLinkedOpenHashMap<>();
@@ -43,9 +43,11 @@ public abstract class ChunkMapMixin
     @Unique
     private final ArrayDeque<PosTimeEntry> toSave = new ArrayDeque<>();
 
-    @Redirect(method = "processUnloads", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/ObjectCollection;iterator()Lit/unimi/dsi/fastutil/objects/ObjectIterator;", remap = false))
-    public ObjectIterator<ChunkHolder> smoothChunksaveChunks(final ObjectCollection instance)
+    @Inject(method = "saveChunksEagerly", at = @At(value = "HEAD"), remap = false, cancellable = true)
+    public void smoothChunksaveChunks(final BooleanSupplier haveTime, final CallbackInfo ci)
     {
+        long now = Util.getMillis();
+        ci.cancel();
         final long currentGametime = level.getGameTime();
 
         if (currentGametime % 64 == 0)
@@ -91,10 +93,10 @@ public abstract class ChunkMapMixin
 
             if (currentGametime > posTimeEntry.savetime)
             {
-                final ChunkHolder holder = visibleChunkMap.get(posTimeEntry.pos.toLong());
+                final ChunkHolder holder = visibleChunkMap.get(posTimeEntry.pos.pack());
                 if (holder != null)
                 {
-                    if (saveChunkIfNeeded(holder))
+                    if (saveChunkIfNeeded(holder, now))
                     {
                         savedChunks++;
                     }
@@ -111,8 +113,6 @@ public abstract class ChunkMapMixin
         {
             SmoothchunkMod.LOGGER.info("Smoothchunks saved chunks this tick: " + savedChunks);
         }
-
-        return emptyMap.values().iterator();
     }
 
     @Inject(method = "save", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap;isExistingChunkFull(Lnet/minecraft/world/level/ChunkPos;)Z"), cancellable = true)

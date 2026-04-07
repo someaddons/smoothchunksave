@@ -1,6 +1,7 @@
 package com.smoothchunk.mixin;
 
 import com.smoothchunk.SmoothchunkMod;
+import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.server.level.ChunkHolder;
@@ -23,10 +24,26 @@ public class ChunkMapSlowUnload
     @Unique
     private int scheduledToUnloadAmount = 0;
 
-    @ModifyConstant(method = "processUnloads", constant = @Constant(intValue = 200))
-    private int setLimit(final int constant)
+    @Unique
+    private int toDropCounter = 0;
+
+    @Inject(method = "processUnloads", at = @At("HEAD"))
+    private void resetCounter(final BooleanSupplier haveTime, final CallbackInfo ci)
     {
-        return SmoothchunkMod.config.getCommonConfig().chunkUnloadLimit + toDrop.size() / 200;
+        toDropCounter = 0;
+    }
+
+    @Redirect(method = "processUnloads", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/longs/LongIterator;hasNext()Z"))
+    private boolean setLimit(final LongIterator instance)
+    {
+        toDropCounter++;
+        int maxUnloaded = SmoothchunkMod.config.getCommonConfig().chunkUnloadLimit + toDrop.size() / 200;
+        if (toDropCounter > maxUnloaded)
+        {
+            return false;
+        }
+
+        return instance.hasNext();
     }
 
     @ModifyConstant(method = "processUnloads", constant = @Constant(intValue = 2000))
