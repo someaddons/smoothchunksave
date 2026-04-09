@@ -38,9 +38,6 @@ public abstract class ChunkMapMixin
     protected abstract boolean saveChunkIfNeeded(final ChunkHolder chunk, final long now);
 
     @Unique
-    private final Long2ObjectLinkedOpenHashMap<ChunkHolder> emptyMap = new Long2ObjectLinkedOpenHashMap<>();
-
-    @Unique
     private final ArrayDeque<PosTimeEntry> toSave = new ArrayDeque<>();
 
     @Inject(method = "saveChunksEagerly", at = @At(value = "HEAD"), remap = false, cancellable = true)
