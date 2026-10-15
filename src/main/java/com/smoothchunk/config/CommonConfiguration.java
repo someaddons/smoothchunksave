@@ -9,6 +9,8 @@ public class CommonConfiguration implements ICommonConfig
     public int chunkUnloadLimit = 20;
     public boolean debugLogging   = false;
     public boolean disableProtoSave = true;
+    public boolean detectBrokenPOIs = true;
+    public boolean logPOIRepair     = true;
 
     public CommonConfiguration()
     {
@@ -33,6 +35,18 @@ public class CommonConfiguration implements ICommonConfig
         entry4.addProperty("disableProtoSave", disableProtoSave);
         root.add("disableProtoSave", entry4);
 
+        final JsonObject entry5 = new JsonObject();
+        entry5.addProperty("desc:",
+            "Detects broken POI locations and fixes them. Recommended to use when using disableProtoSave, as it can leave behind broken POIs when changing world generation on an existing world(e.g. removing a biome mod). Default: true");
+        entry5.addProperty("detectBrokenPOIs", detectBrokenPOIs);
+        root.add("detectBrokenPOIs", entry5);
+
+        final JsonObject entry6 = new JsonObject();
+        entry6.addProperty("desc:",
+            "Detects broken POI locations and fixes them. DisableProtoSave can leave behind broken POIs when changing world generation on an existing world(e.g. removing a biome mod). Default: true");
+        entry6.addProperty("logPOIRepair", logPOIRepair);
+        root.add("logPOIRepair", entry6);
+
         final JsonObject entry3 = new JsonObject();
         entry3.addProperty("desc:", "Enables debug logging of how many chunks got saved in a tick. default: false");
         entry3.addProperty("debugLogging", debugLogging);
@@ -47,5 +61,7 @@ public class CommonConfiguration implements ICommonConfig
         debugLogging = data.get("debugLogging").getAsJsonObject().get("debugLogging").getAsBoolean();
         chunkUnloadLimit = data.get("chunkUnloadLimit").getAsJsonObject().get("chunkUnloadLimit").getAsInt();
         disableProtoSave = data.get("disableProtoSave").getAsJsonObject().get("disableProtoSave").getAsBoolean();
+        detectBrokenPOIs = data.get("detectBrokenPOIs").getAsJsonObject().get("detectBrokenPOIs").getAsBoolean();
+        logPOIRepair = data.get("logPOIRepair").getAsJsonObject().get("logPOIRepair").getAsBoolean();
     }
 }
