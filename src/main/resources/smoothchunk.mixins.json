@@ -1,12 +1,12 @@
 {
   "required": false,
   "package": "com.smoothchunk.mixin",
-  "compatibilityLevel": "JAVA_17",
   "mixins": [
     "ChunkAccessMixin",
     "ChunkMapMixin",
     "ChunkMapSlowUnload",
     "PersistentEntitySectionManagerMixin",
+    "PoiRepairMixin",
     "ServerChunkCacheMixin"
   ],
   "client": [
