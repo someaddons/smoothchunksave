@@ -86,8 +86,8 @@ public abstract class PoiRepairMixin extends SectionStorage<PoiSection, PoiSecti
             {
                 poiSection.remove(pos);
                 final BlockState state = blockSection.getBlockState(SectionPos.sectionRelative(pos.getX()),
-                    SectionPos.sectionRelative(pos.getX()),
-                    SectionPos.sectionRelative(pos.getX()));
+                    SectionPos.sectionRelative(pos.getY()),
+                    SectionPos.sectionRelative(pos.getZ()));
 
                 if (PoiTypes.hasPoi(state))
                 {
